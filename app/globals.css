@@ -244,6 +244,14 @@ h2 {
   margin-right: 2px;
 }
 
+.lifted-title-script {
+  font-family: var(--font-script), "Brush Script MT", cursive;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: 0.2px;
+  color: color-mix(in srgb, var(--accent) 75%, var(--fg));
+}
+
 .page-main {
   min-height: 100vh;
 }
@@ -1246,6 +1254,9 @@ h2 {
 .blog-row p {
   color: var(--fg-2);
   margin-top: 2px;
+  font-family: var(--font-body), Georgia, serif;
+  font-style: normal;
+  line-height: 1.7;
 }
 
 .blog-row span {

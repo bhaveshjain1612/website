@@ -1,5 +1,3 @@
-import { splitFirstWord } from "@/lib/site-data";
-
 type LiftedTitleProps = {
   text: string;
   as?: "h1" | "h2" | "h3";
@@ -7,17 +5,10 @@ type LiftedTitleProps = {
 };
 
 export function LiftedTitle({ text, as = "h3", className }: LiftedTitleProps) {
-  const { first, rest } = splitFirstWord(text);
   const Tag = as;
-
-  if (first.length <= 3) {
-    return <Tag className={className}>{text}</Tag>;
-  }
+  const mergedClassName = [className, "lifted-title-script"].filter(Boolean).join(" ");
 
   return (
-    <Tag className={className}>
-      <span className="script-lift">{first}</span>
-      {rest ? ` ${rest}` : ""}
-    </Tag>
+    <Tag className={mergedClassName}>{text}</Tag>
   );
 }
