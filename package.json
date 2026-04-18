@@ -1,0 +1,37 @@
+{
+  "name": "bhaveshjain-website",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "sanity": "sanity",
+    "smoke": "node scripts/smoke-local.mjs",
+    "import:travel": "node --env-file=.env.local scripts/import-travel-blogs.mjs"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^9.0.0",
+    "@mui/material": "^9.0.0",
+    "@portabletext/react": "^3.2.0",
+    "@sanity/client": "^7.11.1",
+    "@sanity/image-url": "^1.2.0",
+    "@sanity/vision": "^4.7.0",
+    "@vercel/analytics": "^1.5.0",
+    "groq": "^4.14.0",
+    "next": "^15.0.0",
+    "next-sanity": "^10.1.4",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "sanity": "^4.7.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.1",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "typescript": "^5.7.2"
+  }
+}
