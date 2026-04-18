@@ -9,6 +9,7 @@ import {
   Playfair_Display,
   Style_Script
 } from "next/font/google";
+import { AccessibilityProvider } from "@/components/accessibility-provider";
 import { FontComboProvider } from "@/components/font-combo-provider";
 import { SiteAnalytics } from "@/components/site-analytics";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -99,6 +100,11 @@ export const metadata: Metadata = {
     url: "/",
     siteName: "Bhavesh Jain"
   },
+  icons: {
+    icon: "/logo-mark.svg",
+    shortcut: "/logo-mark.svg",
+    apple: "/logo-mark.svg"
+  },
   twitter: {
     card: "summary_large_image",
     title: "Bhavesh Jain",
@@ -113,12 +119,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body
         className={`${styleScript.variable} ${allura.variable} ${greatVibes.variable} ${dancingScript.variable} ${instrumentSerif.variable} ${dmSerifDisplay.variable} ${cormorantGaramond.variable} ${playfairDisplay.variable}`}
       >
-        <ThemeProvider>
-          <FontComboProvider>
-            {children}
-            <SiteAnalytics />
-          </FontComboProvider>
-        </ThemeProvider>
+        <AccessibilityProvider>
+          <ThemeProvider>
+            <FontComboProvider>
+              {children}
+              <SiteAnalytics />
+            </FontComboProvider>
+          </ThemeProvider>
+        </AccessibilityProvider>
       </body>
     </html>
   );
