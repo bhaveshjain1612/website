@@ -92,7 +92,9 @@ export const educationQuery = groq`
     school,
     "deg": degree,
     "sub": subtitle,
-    "when": period,
+    period,
+    startDate,
+    endDate,
     gpa,
     courses
   }
@@ -102,7 +104,10 @@ export const experienceQuery = groq`
   *[_type == "experience"] | order(order asc){
     "co": company,
     role,
-    "when": period,
+    period,
+    startDate,
+    endDate,
+    isCurrent,
     "where": location,
     "hl": highlights,
     priority

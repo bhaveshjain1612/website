@@ -2,6 +2,7 @@ import { cache } from "react";
 import {
   buildSearchItems,
   FALLBACK_SITE_CONTENT,
+  formatMonthYear,
   type BlogPost,
   type ExperienceItem,
   type GalleryItem,
@@ -46,7 +47,9 @@ type SanityEducation = {
   school?: string;
   deg?: string;
   sub?: string;
-  when?: string;
+  period?: string;
+  startDate?: string;
+  endDate?: string;
   gpa?: string;
   courses?: string[];
 };
@@ -54,11 +57,40 @@ type SanityEducation = {
 type SanityExperience = {
   co?: string;
   role?: string;
-  when?: string;
+  period?: string;
+  startDate?: string;
+  endDate?: string;
+  isCurrent?: boolean;
   where?: string;
   hl?: string[];
   priority?: boolean;
 };
+
+function formatPeriod(
+  manualPeriod?: string,
+  startDate?: string,
+  endDate?: string,
+  isCurrent?: boolean
+): string {
+  const trimmedManual = manualPeriod?.trim();
+  if (trimmedManual) {
+    return trimmedManual;
+  }
+
+  const start = startDate ? formatMonthYear(startDate) : "";
+  const end = isCurrent ? "Present" : endDate ? formatMonthYear(endDate) : "";
+
+  if (start && end) {
+    return `${start} - ${end}`;
+  }
+  if (start) {
+    return start;
+  }
+  if (end) {
+    return end;
+  }
+  return "";
+}
 
 function buildRecentItems(blogs: BlogPost[], galleries: GalleryItem[]): SiteContent["recent"] {
   const fromBlogs: RecentItem[] = blogs.slice(0, 6).map((blog, index) => ({
@@ -207,7 +239,7 @@ const fetchCmsContent = cache(async (): Promise<SiteContent | null> => {
               school: item.school as string,
               deg: item.deg || "",
               sub: item.sub || "",
-              when: item.when || "",
+              when: formatPeriod(item.period, item.startDate, item.endDate),
               gpa: item.gpa || "",
               tags: item.courses || []
             }))
@@ -220,7 +252,7 @@ const fetchCmsContent = cache(async (): Promise<SiteContent | null> => {
             .map((item, index) => ({
               co: item.co as string,
               role: item.role || "",
-              when: item.when || "",
+              when: formatPeriod(item.period, item.startDate, item.endDate, item.isCurrent),
               where: item.where || "",
               hl: item.hl || [],
               side: index % 2 === 0 ? ("right" as const) : ("left" as const),
