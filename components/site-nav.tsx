@@ -82,7 +82,9 @@ export function SiteNav({ onSearch }: SiteNavProps) {
       <header className="nav">
         <div className="nav-inner">
           <Link href="/" className="logo">
-            <Image src="/logo-mark.svg" alt="" width={22} height={22} aria-hidden />
+            <span className="logo-badge" aria-hidden>
+              <Image src="/logo-gold-512.png" alt="" width={28} height={28} />
+            </span>
             <span className="logo-text">
               Bhavesh <span>Jain</span>
             </span>

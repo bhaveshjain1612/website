@@ -11,6 +11,7 @@ import {
 } from "next/font/google";
 import { AccessibilityProvider } from "@/components/accessibility-provider";
 import { FontComboProvider } from "@/components/font-combo-provider";
+import { ScrollTopButton } from "@/components/scroll-top-button";
 import { SiteAnalytics } from "@/components/site-analytics";
 import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
@@ -101,9 +102,9 @@ export const metadata: Metadata = {
     siteName: "Bhavesh Jain"
   },
   icons: {
-    icon: "/logo-mark.svg",
-    shortcut: "/logo-mark.svg",
-    apple: "/logo-mark.svg"
+    icon: "/logo-gold-512.png",
+    shortcut: "/logo-gold-512.png",
+    apple: "/logo-gold-512.png"
   },
   twitter: {
     card: "summary_large_image",
@@ -123,6 +124,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <ThemeProvider>
             <FontComboProvider>
               {children}
+              <ScrollTopButton />
               <SiteAnalytics />
             </FontComboProvider>
           </ThemeProvider>

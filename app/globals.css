@@ -348,11 +348,45 @@ h2 {
   font-size: 23px;
 }
 
-.logo img {
-  width: 22px;
-  height: 22px;
+.logo-badge {
+  width: 34px;
+  height: 34px;
   border-radius: 999px;
+  border: 1px solid var(--stroke);
+  background: color-mix(in srgb, var(--bg-2) 88%, transparent);
+  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.18);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+  animation: logo-pop-in 0.55s cubic-bezier(0.2, 0.9, 0.22, 1.1);
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.logo-badge img {
+  width: 28px;
+  height: 28px;
+}
+
+.logo:hover .logo-badge {
+  transform: translateY(-1px) scale(1.06);
+  border-color: var(--stroke-strong);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.24);
+}
+
+@keyframes logo-pop-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.65);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .logo-text {
@@ -1903,6 +1937,39 @@ h2 {
   height: 100%;
   border: 0;
   display: block;
+}
+
+.scroll-top-btn {
+  position: fixed;
+  right: 20px;
+  bottom: 18px;
+  z-index: 180;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid var(--stroke);
+  color: var(--accent);
+  background: color-mix(in srgb, var(--bg-2) 90%, transparent);
+  backdrop-filter: blur(8px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(12px);
+  transition: opacity 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+}
+
+.scroll-top-btn.show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.scroll-top-btn:hover {
+  border-color: var(--stroke-strong);
 }
 
 @media (max-width: 920px) {
