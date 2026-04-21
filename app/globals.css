@@ -451,6 +451,10 @@ h2 {
   background: color-mix(in srgb, var(--accent) 14%, transparent);
 }
 
+.nav-desktop-only {
+  display: inline-flex;
+}
+
 .menu-btn {
   display: none;
   width: 32px;
@@ -473,28 +477,63 @@ h2 {
 
 .mobile-menu {
   position: fixed;
-  inset: 0;
+  top: 56px;
+  left: 0;
+  right: 0;
   z-index: 98;
-  background: color-mix(in srgb, var(--bg) 94%, transparent);
+  border-bottom: 1px solid var(--stroke);
+  background: color-mix(in srgb, var(--bg) 96%, transparent);
+  backdrop-filter: blur(14px);
+  transform: translateY(-8px);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.25s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 24px;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  display: none;
 }
 
 .mobile-menu.open {
   opacity: 1;
+  transform: translateY(0);
   pointer-events: auto;
 }
 
+.mobile-menu-panel {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 12px 28px 16px;
+  display: grid;
+  gap: 8px;
+}
+
 .mobile-menu a {
-  font-size: 32px;
-  font-family: var(--font-heading), Georgia, serif;
-  font-style: italic;
+  font-size: calc(15px * var(--a11y-font-scale));
+  font-family: var(--font-body), Georgia, serif;
+  color: var(--fg-2);
+  border-bottom: 1px solid var(--stroke);
+  padding: 8px 0;
+}
+
+.mobile-menu-tools {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.mobile-menu-action {
+  border: 1px solid var(--stroke);
+  background: transparent;
+  color: var(--fg-2);
+  border-radius: 4px;
+  padding: 8px 10px;
+  cursor: pointer;
+  font-size: calc(12px * var(--a11y-font-scale));
+}
+
+.mobile-menu-action.active {
+  color: var(--accent);
+  border-color: var(--stroke-strong);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
 }
 
 .a11y-wrap {
@@ -534,7 +573,7 @@ h2 {
 
 .a11y-control {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 10px;
 }
@@ -568,6 +607,27 @@ h2 {
   font-size: calc(12px * var(--a11y-font-scale));
 }
 
+.a11y-chip {
+  border: 1px solid var(--stroke);
+  background: transparent;
+  color: var(--fg-2);
+  border-radius: 999px;
+  height: 30px;
+  max-width: 190px;
+  padding: 0 10px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: calc(11px * var(--a11y-font-scale));
+  white-space: nowrap;
+}
+
+.a11y-chip span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .a11y-toggle-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -594,6 +654,13 @@ h2 {
 .a11y-reset {
   justify-self: end;
   color: var(--fg-3);
+}
+
+.a11y-panel-mobile {
+  position: static;
+  width: 100%;
+  margin-top: 2px;
+  box-shadow: none;
 }
 
 .search-overlay {
@@ -1773,7 +1840,18 @@ h2 {
 
 .lead-contact {
   color: var(--fg-2);
-  margin-bottom: 16px;
+  margin-bottom: 10px;
+}
+
+.contact-settings-note {
+  color: var(--fg-3);
+  font-size: calc(13px * var(--a11y-font-scale));
+  line-height: 1.7;
+  margin-bottom: 14px;
+}
+
+.contact-socials {
+  margin-bottom: 14px;
 }
 
 .contact-form {
@@ -1810,6 +1888,12 @@ h2 {
   cursor: wait;
 }
 
+.contact-captcha-note {
+  color: var(--fg-4);
+  font-size: calc(12px * var(--a11y-font-scale));
+  line-height: 1.6;
+}
+
 .contact-status {
   margin-top: 4px;
   font-size: 14px;
@@ -1835,6 +1919,13 @@ h2 {
   color: var(--accent);
   display: inline-block;
   margin-top: 8px;
+}
+
+.contact-admin-note {
+  margin-top: 10px;
+  color: var(--fg-4);
+  font-size: calc(12px * var(--a11y-font-scale));
+  line-height: 1.6;
 }
 
 .footer {
@@ -1978,13 +2069,26 @@ h2 {
   }
 }
 
-@media (max-width: 820px) {
+@media (max-width: 820px), (hover: none) and (pointer: coarse) {
   .nav-links {
     display: none;
   }
 
+  .nav-desktop-only {
+    display: none !important;
+  }
+
   .menu-btn {
     display: inline-flex;
+  }
+
+  .mobile-menu {
+    display: block;
+  }
+
+  .mobile-menu-panel {
+    padding-left: 16px;
+    padding-right: 16px;
   }
 
   .timeline::before {

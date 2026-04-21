@@ -14,6 +14,7 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { useAccessibility } from "@/components/accessibility-provider";
 import { useFontCombo } from "@/components/font-combo-provider";
 import { useTheme } from "@/components/theme-provider";
+import { trackEvent } from "@/lib/analytics";
 
 type SiteNavProps = {
   onSearch: () => void;
@@ -50,7 +51,7 @@ export function SiteNav({ onSearch }: SiteNavProps) {
   }, [pathname]);
 
   useEffect(() => {
-    if (!a11yOpen) {
+    if (!a11yOpen || mobileOpen) {
       return undefined;
     }
 
@@ -75,7 +76,119 @@ export function SiteNav({ onSearch }: SiteNavProps) {
       window.removeEventListener("keydown", handleEscape);
       window.removeEventListener("mousedown", handleOutsideClick);
     };
-  }, [a11yOpen]);
+  }, [a11yOpen, mobileOpen]);
+
+  const toggleMobileMenu = () => {
+    setMobileOpen((open) => !open);
+    setA11yOpen(false);
+  };
+
+  const openSearchFromDesktop = () => {
+    trackEvent("search_open", { source: "desktop" });
+    onSearch();
+  };
+
+  const openSearchFromMenu = () => {
+    setMobileOpen(false);
+    setA11yOpen(false);
+    trackEvent("search_open", { source: "mobile" });
+    onSearch();
+  };
+
+  const closeMobileMenu = () => {
+    setMobileOpen(false);
+    setA11yOpen(false);
+  };
+
+  const handleThemeToggle = () => {
+    trackEvent("theme_toggle", { next_theme: theme === "dark" ? "light" : "dark" });
+    toggleTheme();
+  };
+
+  const handleFontComboCycle = () => {
+    trackEvent("font_combo_cycle", { current_combo: combo.id });
+    cycleCombo();
+  };
+
+  const handleReduceMotionToggle = () => {
+    trackEvent("a11y_reduce_motion_toggle", { enabled: !reduceMotion });
+    toggleReduceMotion();
+  };
+
+  const handleHighContrastToggle = () => {
+    trackEvent("a11y_high_contrast_toggle", { enabled: !highContrast });
+    toggleHighContrast();
+  };
+
+  const handleA11yReset = () => {
+    trackEvent("a11y_reset");
+    resetAccessibility();
+  };
+
+  const renderA11yPanel = (panelId: string, panelClassName?: string) => (
+    <div
+      id={panelId}
+      className={panelClassName ? `a11y-panel ${panelClassName}` : "a11y-panel"}
+      role="dialog"
+      aria-label="Accessibility settings"
+    >
+      <div className="a11y-header">
+        <strong>Accessibility</strong>
+        <span>Adjust readability and visual preferences</span>
+      </div>
+      <div className="a11y-control">
+        <span>Text size</span>
+        <div className="a11y-stepper">
+          <button type="button" onClick={decreaseFontScale} aria-label="Decrease text size">
+            A-
+          </button>
+          <output aria-live="polite">{Math.round(fontScale * 100)}%</output>
+          <button type="button" onClick={increaseFontScale} aria-label="Increase text size">
+            A+
+          </button>
+        </div>
+      </div>
+      <div className="a11y-control">
+        <span>Theme</span>
+        <button type="button" className="a11y-chip" onClick={handleThemeToggle}>
+          {theme === "dark" ? (
+            <LightModeRoundedIcon fontSize="inherit" />
+          ) : (
+            <DarkModeRoundedIcon fontSize="inherit" />
+          )}
+          <span>{theme === "dark" ? "Switch to light" : "Switch to dark"}</span>
+        </button>
+      </div>
+      <div className="a11y-control">
+        <span>Font style</span>
+        <button type="button" className="a11y-chip" onClick={handleFontComboCycle} title={combo.label}>
+          <TextFieldsRoundedIcon fontSize="inherit" />
+          <span>{combo.label}</span>
+        </button>
+      </div>
+      <div className="a11y-toggle-row">
+        <button
+          type="button"
+          className={reduceMotion ? "active" : ""}
+          onClick={handleReduceMotionToggle}
+          aria-pressed={reduceMotion}
+        >
+          Reduce motion
+        </button>
+        <button
+          type="button"
+          className={highContrast ? "active" : ""}
+          onClick={handleHighContrastToggle}
+          aria-pressed={highContrast}
+        >
+          High contrast
+        </button>
+      </div>
+      <button type="button" className="a11y-reset" onClick={handleA11yReset}>
+        Reset
+      </button>
+    </div>
+  );
 
   return (
     <>
@@ -101,87 +214,39 @@ export function SiteNav({ onSearch }: SiteNavProps) {
                 </Link>
               ))}
             </nav>
-            <button type="button" className="nav-btn" onClick={onSearch} aria-label="Search">
+            <button
+              type="button"
+              className="nav-btn nav-desktop-only"
+              onClick={openSearchFromDesktop}
+              aria-label="Search"
+            >
               <SearchRoundedIcon fontSize="inherit" />
             </button>
-            <button
-              type="button"
-              className="nav-btn"
-              onClick={cycleCombo}
-              aria-label="Cycle Font Combination"
-              title={combo.label}
-            >
-              <TextFieldsRoundedIcon fontSize="inherit" />
-            </button>
-            <button
-              type="button"
-              className="nav-btn"
-              onClick={toggleTheme}
-              aria-label="Toggle Theme"
-            >
-              {theme === "dark" ? (
-                <LightModeRoundedIcon fontSize="inherit" />
-              ) : (
-                <DarkModeRoundedIcon fontSize="inherit" />
-              )}
-            </button>
-            <div className="a11y-wrap" ref={panelRef}>
+            <div className="a11y-wrap nav-desktop-only" ref={panelRef}>
               <button
                 type="button"
                 className={`nav-btn ${a11yOpen ? "active" : ""}`}
-                onClick={() => setA11yOpen((current) => !current)}
+                onClick={() =>
+                  setA11yOpen((current) => {
+                    const next = !current;
+                    if (next) {
+                      trackEvent("a11y_open", { source: "desktop" });
+                    }
+                    return next;
+                  })
+                }
                 aria-label="Accessibility Settings"
                 aria-expanded={a11yOpen}
-                aria-controls="a11y-panel"
+                aria-controls="a11y-panel-desktop"
               >
                 <AccessibilityNewRoundedIcon fontSize="inherit" />
               </button>
-              {a11yOpen ? (
-                <div id="a11y-panel" className="a11y-panel" role="dialog" aria-label="Accessibility settings">
-                  <div className="a11y-header">
-                    <strong>Accessibility</strong>
-                    <span>Adjust readability</span>
-                  </div>
-                  <div className="a11y-control">
-                    <span>Text size</span>
-                    <div className="a11y-stepper">
-                      <button type="button" onClick={decreaseFontScale} aria-label="Decrease text size">
-                        A-
-                      </button>
-                      <output aria-live="polite">{Math.round(fontScale * 100)}%</output>
-                      <button type="button" onClick={increaseFontScale} aria-label="Increase text size">
-                        A+
-                      </button>
-                    </div>
-                  </div>
-                  <div className="a11y-toggle-row">
-                    <button
-                      type="button"
-                      className={reduceMotion ? "active" : ""}
-                      onClick={toggleReduceMotion}
-                      aria-pressed={reduceMotion}
-                    >
-                      Reduce motion
-                    </button>
-                    <button
-                      type="button"
-                      className={highContrast ? "active" : ""}
-                      onClick={toggleHighContrast}
-                      aria-pressed={highContrast}
-                    >
-                      High contrast
-                    </button>
-                  </div>
-                  <button type="button" className="a11y-reset" onClick={resetAccessibility}>
-                    Reset
-                  </button>
-                </div>
-              ) : null}
+              {a11yOpen ? renderA11yPanel("a11y-panel-desktop") : null}
             </div>
             <button
               type="button"
               className="menu-btn"
-              onClick={() => setMobileOpen((open) => !open)}
+              onClick={toggleMobileMenu}
               aria-label="Toggle Menu"
             >
               {mobileOpen ? (
@@ -194,12 +259,39 @@ export function SiteNav({ onSearch }: SiteNavProps) {
         </div>
       </header>
       <div className={`mobile-menu ${mobileOpen ? "open" : ""}`}>
-        <Link href="/">Home</Link>
-        {LINKS.map((link) => (
-          <Link key={link.href} href={link.href}>
-            {link.label}
+        <div className="mobile-menu-panel">
+          <Link href="/" onClick={closeMobileMenu}>
+            Home
           </Link>
-        ))}
+          {LINKS.map((link) => (
+            <Link key={link.href} href={link.href} onClick={closeMobileMenu}>
+              {link.label}
+            </Link>
+          ))}
+          <div className="mobile-menu-tools">
+            <button type="button" className="mobile-menu-action" onClick={openSearchFromMenu}>
+              Search
+            </button>
+            <button
+              type="button"
+              className={`mobile-menu-action ${a11yOpen ? "active" : ""}`}
+              onClick={() =>
+                setA11yOpen((current) => {
+                  const next = !current;
+                  if (next) {
+                    trackEvent("a11y_open", { source: "mobile" });
+                  }
+                  return next;
+                })
+              }
+              aria-expanded={a11yOpen}
+              aria-controls="a11y-panel-mobile"
+            >
+              Accessibility
+            </button>
+          </div>
+          {a11yOpen ? renderA11yPanel("a11y-panel-mobile", "a11y-panel-mobile") : null}
+        </div>
       </div>
     </>
   );

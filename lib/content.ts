@@ -191,6 +191,7 @@ const fetchCmsContent = cache(async (): Promise<SiteContent | null> => {
     const galleries = galleriesRaw
       .map(sanitizeGallery)
       .filter((item): item is GalleryItem => Boolean(item));
+    const envContactFormEndpoint = process.env.NEXT_PUBLIC_CONTACT_FORM_ENDPOINT?.trim() || "";
     const mappedSettings = {
       siteName: settings?.siteName || FALLBACK_SITE_CONTENT.settings.siteName,
       tagline: settings?.tagline || FALLBACK_SITE_CONTENT.settings.tagline,
@@ -205,7 +206,9 @@ const fetchCmsContent = cache(async (): Promise<SiteContent | null> => {
           : FALLBACK_SITE_CONTENT.settings.quotes,
       contactEmail: settings?.contactEmail || FALLBACK_SITE_CONTENT.settings.contactEmail,
       contactFormEndpoint:
-        settings?.contactFormEndpoint || FALLBACK_SITE_CONTENT.settings.contactFormEndpoint,
+        settings?.contactFormEndpoint?.trim() ||
+        envContactFormEndpoint ||
+        FALLBACK_SITE_CONTENT.settings.contactFormEndpoint,
       newsletterEndpoint:
         settings?.newsletterEndpoint || FALLBACK_SITE_CONTENT.settings.newsletterEndpoint,
       textureOverlayLight:
